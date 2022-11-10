@@ -1,5 +1,51 @@
 # Mini project - Energy saving automatic outside light
 
+## Explanation of Code
+
+Task 1: The comparator connected to the LDR will trigger an interrupt when the voltage across the LDR goes above or below the threshold voltage. We have got two comparators, one rising and one falling, to account for the two different output states that the comparaotr can go between. The threshold voltage was calibrated in a prvevious lab. When the comparator interrupt is activated a signal is sent to the outout LED to change state.
+
+Task 2: We use the Timer0 function from Lab 3. Everytime the timer overflows a second has passed and our time updates. In test mode, so that testing can be done at a rapid pace, one timer overflow corresponds to an hour. If test mode is not activated the timer functions in real time. From this we can work out the time of day and complete the remainings tasks. The hour is displayed in binary on the LED array board in a similar manner to Lab 2.
+
+Task 3: When our hour variable is between 1 and 5 am we turn off the comparator so that the LED will always be off during this period. Once it has reached 5 am it is turned back on and the LED operates as usual.
+
+Task 4: Given we have kept track of hours we then create new variables that keep track of: day of the week, day of the month, month and year. This allows us to know what the date is at any one time. Daylight savings gets updated on the last Sunday of March and October. We are constantly checking if we are in the last week of the month and if it is a Sunday. If so, at 2 am the hour gets updated to adjust for daylight savings. A new variable is also created called BST to keep track of timezone. Separate files check whether the month or day needs to be updatd and if the year is a leap year.
+
+Task 5: To maintain time synchronicity we compare the sunrise time on two specific days of the year to when our LED changes state. We only check this twice as we do not expect the system to go very far out of sync with the sun and this function is merely a re-calibration by a few minutes. If the sunrise has not happened at the expected time, the clock is adjusted so that the sunrise happens at the pre-programmed time. 
+
+
+##Explanation of the Functionality of Each File
+
+LCD.C: File that initialises the LCD using the instructions from Lab 4.
+
+LCD_print_file: Outputs the date on the LCD board
+
+LEDarray: Initialises and outputs the hour on the LED array
+
+Comparator: Codes the interrupts that get activated when the voltage across the LDR goes past the threshold.
+
+Date_checker: Checks whether the day of the month has to be reset back to 1 when it is a new month. e.g. Prevents date going from January 31st to January 32nd and instead goes to January 1st. Month checker file updates the month.
+
+Daylight_savings: Checks whether it is the last Sunday of March or October and if it is adjusts the time at 2 am to account for daylight savings. The variable BST keeps track of which timezone we are in. This is especially useful to prevent an infinite loop of time updates in October as the hour is constantly reversed at 2 am.
+
+Energy_savings: Checks whether the time is between 1 and 5 am and turns off the DAC in this time period so that the LED will not be on.
+
+Interrupts: Same use as Lab 2.
+
+Leap_function: Used to work out if the new year is a leap year, only activated when the day switches from December 31st to January 1st.
+
+Main: Updates hours and accordingly calls the necessary function to complete assignments.
+
+Month_checker: Updates month when the day of the month resets. E.g. January 31st -> January 1st (via date_cheker) -> February 1st (via month_checker).
+
+Time_sync: Compares when the LED changes state in the morning (from on to off) with scheduled sunrise times collated from the internet. Only done twice in the year as we do not expect it to go very out of sync over the course of the year. 
+
+Timers: Counts from 3036 to 2^16 and then overflows back to 3036. There is 1 second between each overflow, this is used to simulate real life seconds (hours in test mode).
+
+
+
+
+
+
 ## Learning outcomes
 
 The principal learning objectives for this project are:
